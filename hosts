@@ -1,0 +1,2 @@
+[DB_servers]
+centos ansible_host=54.172.21.72

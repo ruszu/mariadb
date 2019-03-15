@@ -1,0 +1,64 @@
+---
+# tasks file for mariadb
+
+ - name: Add a repo for mariadb
+   yum_repository:
+       name: mariadb_10.4.3
+       description: official repo
+       baseurl: http://yum.mariadb.org/10.4.3/centos7-amd64/
+       gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+       gpgcheck: true
+ 
+ - name: Install mariadb
+   yum: name=mariadb-server state=installed
+
+ - name: Install the Python MySQL Support Libraries
+   yum: pkg=MySQL-python state=latest
+
+ - name: Start mariadb
+   service: name=mariadb state=started enabled=yes
+
+# - name: Set root password
+#   mysql_user: 
+#       name: root
+#       host: "{{ item }}"
+#       password: "{{ new_password }}"
+#       check_implicit_admin: yes
+#       login_user: root
+#       login_password: "{{ current_password }}"
+#       state: present
+#   with_items:
+#        - "{{ ansible_hostname }}"
+#        - 127.0.0.1
+#        - ::1
+#        - localhost 
+
+ - name: Remove mysql test database
+   mysql_db:
+        name: test 
+        state: absent
+        login_user: root
+        login_password: "{{ new_password }}"
+
+ - name: Delete anonymous mysql user
+   mysql_user:
+        name: "" 
+        state: absent
+        login_user: root
+        login_password: "{{ new_password  }}"
+
+ - name: Create a new database 
+   mysql_db:
+        name: mydb
+        state: present
+        login_user: root
+        login_password: "{{ new_password  }}"
+
+ - name: Create database user 
+   mysql_user:
+        login_user: root
+        login_password: "{{ new_password  }}"
+        name: Tom
+        password: qwe123
+        priv: 'mydb.*:ALL'
+        state: present

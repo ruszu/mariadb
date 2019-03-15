@@ -1,0 +1,5 @@
+---
+# defaults file for mariadb
+
+current_password : 
+new_password : "root"
